@@ -53,7 +53,7 @@ public class Board {
 		return true;
 	}
 
-	public void play(char symbol, Move move) {
+	public void play(Player player, Move move) {
 		
 		int i = move.getI();
 		int j = move.getJ();
@@ -62,7 +62,7 @@ public class Board {
 		//TODO Desenvolver checagem de termino do jogo
 		//TODO Desenvolver verificar se a jogada e valida
 		
-		matrix[i][j] = symbol;
+		matrix[i][j] = player.getSymbol();
 	}
 
 }

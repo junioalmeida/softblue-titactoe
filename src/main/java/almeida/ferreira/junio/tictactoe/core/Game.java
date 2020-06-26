@@ -25,24 +25,28 @@ public class Game {
 
 		boolean gameEnded = false;
 		boolean sequenceFound;
-		Player currentPlayer = null;
+		Player currentPlayer = nextPlayer();
 
 		while (!gameEnded) {
 
-			currentPlayer = nextPlayer();
-			
 			board.print();
 			
 			UI.printNewLine();
 			
-			sequenceFound = currentPlayer.play();
+			try {
+				sequenceFound = currentPlayer.play();
+			} catch (InvalidMoveException e) {
+				UI.printText("ERRO: " + e.getMessage());
+				continue;
+			}
 
 			if (sequenceFound) {
-				//UI.printText("O(a) Jogador(a) '" + currentPlayer.getName() + "' venceu a partida!");
 				gameEnded = true;
 			} else if (board.isFull()) {
 				gameEnded = true;
 				currentPlayer = null;
+			}else {
+				currentPlayer = nextPlayer();
 			}
 		}
 		

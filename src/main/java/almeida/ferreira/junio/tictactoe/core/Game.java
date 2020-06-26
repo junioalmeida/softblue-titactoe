@@ -1,6 +1,7 @@
 package almeida.ferreira.junio.tictactoe.core;
 
 import almeida.ferreira.junio.tictactoe.Constants;
+import almeida.ferreira.junio.tictactoe.score.ScoreManager;
 import almeida.ferreira.junio.tictactoe.ui.UI;
 
 public class Game {
@@ -8,11 +9,13 @@ public class Game {
 	private Board board;
 	private Player[] players;
 	private int currentPlayerIndex;
+	private ScoreManager scoreManager;
 
 	public Game() {
 		board = new Board();
 		players = new Player[Constants.SYMBOL_PLAYERS.length];
 		currentPlayerIndex = -1;
+		scoreManager = getScoreManager();
 	}
 
 	public void play() {
@@ -30,9 +33,9 @@ public class Game {
 		while (!gameEnded) {
 
 			board.print();
-			
+
 			UI.printNewLine();
-			
+
 			try {
 				sequenceFound = currentPlayer.play();
 			} catch (InvalidMoveException e) {
@@ -45,19 +48,21 @@ public class Game {
 			} else if (board.isFull()) {
 				gameEnded = true;
 				currentPlayer = null;
-			}else {
+			} else {
 				currentPlayer = nextPlayer();
 			}
 		}
-		
+
 		UI.printNewLine();
-		
-		if(currentPlayer == null) {
+
+		if (currentPlayer == null) {
 			UI.printText("O jogo ficou empatado.");
-		}else {
+		} else {
 			UI.printText("O(a) Jogador(a) '" + currentPlayer.getName() + "' venceu a partida!");
+
+			scoreManager.saveScore(currentPlayer);
 		}
-		
+
 		board.print();
 		UI.printNewLine();
 		UI.printText("Fim do Jogo!");
@@ -71,6 +76,13 @@ public class Game {
 
 		Player player = new Player(name, symbol, board);
 
+		Integer score = scoreManager.getScore(player);
+
+		if (score != null) {
+			String word = score <= 1 ? "vitória" : "vitórias";
+			UI.printText("O jogador '" + player.getName() + "' possui " + score + word);
+		}
+
 		UI.printText("\t->'" + name + "' vai utilizar o símbolo '" + symbol + "'.");
 
 		return player;
@@ -81,6 +93,10 @@ public class Game {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 
 		return players[currentPlayerIndex];
+	}
+
+	private ScoreManager getScoreManager() {
+		return null;
 	}
 
 }

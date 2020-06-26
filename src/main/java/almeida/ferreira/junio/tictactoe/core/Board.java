@@ -53,16 +53,21 @@ public class Board {
 		return true;
 	}
 
-	public boolean play(Player player, Move move) {
+	public boolean play(Player player, Move move) throws InvalidMoveException {
 
 		int i = move.getI();
 		int j = move.getJ();
+
+		if (i < 0 || j < 0 || i >= matrix.length || j >= matrix.length) {
+			throw new InvalidMoveException("Jogada fora do intervalo permitido.");
+		}
 		
-		// TODO Desenvolver checagem de termino do jogo
-		// TODO Desenvolver verificar se a jogada e valida
+		if(matrix[i][j] != ' ') {
+			throw new InvalidMoveException("A jogada já foi realizada.");
+		}
 
 		matrix[i][j] = player.getSymbol();
-		
+
 		return checkRows(player) || checkColumns(player) || checkDiagonal1(player) || checkDiagonal2(player);
 	}
 
@@ -115,11 +120,11 @@ public class Board {
 		char symbol = player.getSymbol();
 
 		for (int i = 0; i < Constants.BOARD_SIZE; i++) {
-			if(symbol != matrix[i][i]) {
+			if (symbol != matrix[i][i]) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -127,14 +132,14 @@ public class Board {
 
 		char symbol = player.getSymbol();
 		int lastLine = Constants.BOARD_SIZE - 1;
-		
+
 		for (int i = 0, j = lastLine; i <= lastLine; i++, j--) {
-			if(symbol != matrix[i][j]) {
+			if (symbol != matrix[i][j]) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 }

@@ -1,6 +1,9 @@
 package almeida.ferreira.junio.tictactoe.core;
 
+import java.io.IOException;
+
 import almeida.ferreira.junio.tictactoe.Constants;
+import almeida.ferreira.junio.tictactoe.score.FileScoreManager;
 import almeida.ferreira.junio.tictactoe.score.ScoreManager;
 import almeida.ferreira.junio.tictactoe.ui.UI;
 
@@ -15,7 +18,14 @@ public class Game {
 		board = new Board();
 		players = new Player[Constants.SYMBOL_PLAYERS.length];
 		currentPlayerIndex = -1;
-		scoreManager = getScoreManager();
+		
+		try {
+			scoreManager = getScoreManager();
+		}catch (IOException E) {
+			UI.printText("Ocorreu um erro durante a leitura do arquivo de pontuação.");
+			UI.printNewLine();
+			UI.printText("Erro: " + E.getMessage());
+		}
 	}
 
 	public void play() {
@@ -60,7 +70,13 @@ public class Game {
 		} else {
 			UI.printText("O(a) Jogador(a) '" + currentPlayer.getName() + "' venceu a partida!");
 
-			scoreManager.saveScore(currentPlayer);
+			try {
+				scoreManager.saveScore(currentPlayer);
+			}catch (IOException E) {
+				UI.printText("Ocorreu um erro durante a gravação do arquivo de pontuação.");
+				UI.printNewLine();
+				UI.printText("Erro: " + E.getMessage());
+			}
 		}
 
 		board.print();
@@ -80,7 +96,7 @@ public class Game {
 
 		if (score != null) {
 			String word = score <= 1 ? "vitória" : "vitórias";
-			UI.printText("O jogador '" + player.getName() + "' possui " + score + word);
+			UI.printText("\tO jogador '" + player.getName() + "' possui " + score + " " + word + ".");
 		}
 
 		UI.printText("\t->'" + name + "' vai utilizar o símbolo '" + symbol + "'.");
@@ -95,8 +111,8 @@ public class Game {
 		return players[currentPlayerIndex];
 	}
 
-	private ScoreManager getScoreManager() {
-		return null;
+	private ScoreManager getScoreManager() throws IOException  {
+		return new FileScoreManager();
 	}
 
 }
